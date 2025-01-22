@@ -91,7 +91,7 @@ def update_cache(new_data: dict, cache_file: str, settings: dict):
 """
 def update_log(report: dict, log_file: str, settings: dict):
     log_lines = []
-    report_lines = ""
+    report_lines = [""]
     if os.path.isfile(log_file):
         with open(log_file, "r") as lf:
             log_lines = lf.readlines()
@@ -108,15 +108,20 @@ def update_log(report: dict, log_file: str, settings: dict):
                     new_lines.append("\t".join(my_vals))
 
             if len(new_lines) > 0:
-                report_lines = ["\n" + today_date() + ":\n\n", "New workflow deployed on " + data_field, "\n"]
+                report_lines.append("\n" + "New workflow(s) deployed on " + data_field + ":\n")
+                report_lines.append("\n")
                 for new_tag in new_lines:
                     report_lines.append(new_tag + "\n")
+                report_lines.append("\n")
 
-    with open(log_file, 'w') as lfw:
-        lfw.writelines(report_lines)
-        if len(log_lines) > 0:
-            lfw.writelines(log_lines)
-    lfw.close()
+    if len(report_lines) > 0:
+        title_lines = ["\n", today_date() + ":\n", "-----------------------------------\n"]
+        with open(log_file, 'w') as lfw:
+            lfw.writelines(title_lines)
+            lfw.writelines(report_lines)
+            if len(log_lines) > 0:
+                lfw.writelines(log_lines)
+        lfw.close()
 
 
 """
